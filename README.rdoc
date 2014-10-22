@@ -1,0 +1,48 @@
+= アンケートフォーム
+
+SendGridを利用したアンケートフォームプログラム。
+Web GUIから、アンケートフォームの各項目に入力して送信すると、SendGridのSMTPサーバ経由でその内容がメールで指定のアドレスへ送信される。
+
+== 動作環境
+
+* Ruby 1.9.3, 2.0.0
+
+== 依存ライブラリ
+
+* Sinatra
+* Haml
+* Sequel
+* Mail
+* Json
+
+== 起動方法（ローカル）
+
+  - 下記の通りに各項目に入力：
+    - <mail_address>: アンケート結果を送信させたいアドレス
+    - <your_domain>: ドメイン名
+    - <your_name>: アカウント名
+    - <password>: パスワード
+
+  $ gem install sinatra sass mail sequel sqlite3
+  $ gem install bundler
+  $ bundle install
+  $ VCAP_SERVICES="{\"user-provided\":[{\"credentials\":{\"to_addr\":\"<mail_address>\",\"address\":\"smtp.sendgrid.net\",\"port\":\"587\",\"domain\":\"<your_domain>\",\"user_name\":\"<your_name>\",\"password\":\"<password>\",\"authentication\":\"plain\"}}]}" ruby -Ku start.rb
+
+- http://localhost:4567/ にアクセス
+- アンケートフォームの各項目に入力し、送信ボタン押下
+
+== 起動方法（Cloudn PaaS利用）
+
+  - 下記の通りに各項目に入力：
+    - <mail_address>: アンケート結果を送信させたいアドレス
+    - <your_domain>: ドメイン名
+    - <your_name>: アカウント名
+    - <password>: パスワード
+
+  $ gud create-user-provided-service sendgrid -p '{"to_addr":"<mail_address>","address":"smtp.sendgrid.net","port":"587","domain":"<your_domain>","user_name":"<your_name>","password":"<password>","authentication":"plain"}'
+  $ gud push questionnaire --no-start
+  $ gud bind-service questionnaire sendgrid
+  $ gud start questionnaire
+
+- http://questionnaire.paas.jp-e1.cloudn-service.com にアクセス
+- アンケートフォームの各項目に入力し、送信ボタン押下
